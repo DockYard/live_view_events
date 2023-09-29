@@ -22,7 +22,6 @@ defmodule LiveViewEvents.MixProject do
   defp deps do
     [
       {:floki, ">= 0.30.0", only: :test},
-      {:live_isolated_component, "~> 0.7.0", only: [:dev, :test]},
       {:phoenix_live_view, "~> 0.19"}
     ]
   end
