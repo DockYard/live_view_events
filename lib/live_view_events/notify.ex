@@ -1,5 +1,80 @@
 defmodule LiveViewEvents.Notify do
-  @moduledoc false
+  @moduledoc """
+  Functions to send messages in the server including to live components
+  and handle them.
+
+  ## Example
+
+  In our view, we are going to have two components. The first one is a `Sender`
+  that can send an event to whatever is being passed. Let's dig into the
+  implementation:
+
+      defmodule MyAppWeb.Components.Sender do
+        use MyAppWeb, :live_component
+        use LiveViewEvents
+
+        def mount(socket) do
+          socket = assigns(socket, :notify_to, :self)
+
+          {:ok, socket}
+        end
+
+        def render(assigns) do
+          ~H[<button type="button" phx-click="clicked" phx-target={@myself}>Send event</button>]
+        end
+
+        def handle_event("click", _params, socket) do
+          notify_to(socket.assigns.notify_to, :sender_event, :rand.uniform(100))
+        end
+      end
+
+  This component will send a `:sender_event` message to whatever we pass to the `notify_to`
+  attribute. It sends a random number between up to 100 as parameter
+
+  Let's dig into the receiver:
+
+      defmodule MyAppWeb.Components.Receiver do
+        use MyAppWeb, :live_component
+        use LiveViewEvents
+
+        def mount(socket) do
+          socket = assigns(socket, :messages, [])
+
+          {:ok, socket}
+        end
+
+        def update(assigns, socket) do
+          socket = handle_info_or_assigns(socket, assigns)
+
+          {:ok, socket}
+        end
+
+        def render(assigns), do: ~H[<ul><li :for={m <- @messages}><%= m %></li></ul>]
+
+        def handle_info({:sender_event, num}, socket) do
+          {:noreply, update(socket, :messages, &[num | &1])}
+        end
+      end
+
+  This component will receive messages and handle them in `handle_info/2` because
+  it is using `handle_info_or_assigns/2` in their [`LiveComponent.update/2`](`c:Phoenix.LiveComponent.update/2`).
+  It will add the received messages to `socket.assigns.messages` and display
+  them. As the reader can see, it is pattern matching against `:sender_event` messages.
+  When `notify_to/3` is used, the message sent is a tuple containing the event name
+  as first element, and the params as second the second element.
+
+  Finally, let's take a look at what the live view template would need to look like
+  for this to work:application
+
+      <div class="contents">
+        <.live_component
+          module={MyAppWeb.Components.Sender}
+          id="sender"
+          notify_to={{MyAppWeb.Components.Receiver, "receiver"}}
+          />
+        <.live_component module={MyAppWeb.Components.Receiver} id="receiver" />
+      </div>
+  """
 
   @assign_name_for_event "__live_view_events__assign_event__"
 
@@ -22,14 +97,15 @@ defmodule LiveViewEvents.Notify do
   ## Why using `c:Phoenix.LiveView.handle_info/2` in components?
 
   In one word: consistency. Messages coming from the client are
-  handled by `c:Phoenix.LiveView.handle_event/3` or by
-  `c:Phoenix.LiveComponent.handle_event/3`. For messages sent from
-  the server are currently being handled by `c:Phoenix.LiveView.handle_info/2`
-  in live views, with not official way to do this but the hack this
-  library is based on.
+  handled by [LiveView.handle_event/3](`c:Phoenix.LiveView.handle_event/3`)
+  in live views or by [LiveComponent.handle_event/3](`c:Phoenix.LiveComponent.handle_event/3`)
+  in live components.
+  Messages sent from the server are currently being handled by
+  [LiveView.handle_info/2](`c:Phoenix.LiveView.handle_info/2`) in live views,
+  with no official way to do this but the __hack__ this library is based on.
 
-  The hack is basically send an update with `Phoenix.LiveView.send_update/3`
-  and handle it in `c:Phoenix.LiveComponent.update/2`
+  The hack is basically send an update with [LiveView](`Phoenix.LiveView.send_update/3`)
+  and handle it in [LiveComponent.update/2](`c:Phoenix.LiveComponent.update/2`).
   """
   defmacro handle_info_or_assign(socket, assigns) do
     quote do
