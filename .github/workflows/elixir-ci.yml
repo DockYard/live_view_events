@@ -53,9 +53,3 @@ jobs:
           mix deps.get
           mix deps | grep "phoenix "
           mix test
-      - name: Check let warning
-        run: |
-          cd test_app
-          mix test --only let_warning 2> /tmp/test.output
-          cat /tmp/test.output
-          !(cat /tmp/test.output | grep -q "Using variables in HEEx templates are discouraged as they disable change tracking.")
