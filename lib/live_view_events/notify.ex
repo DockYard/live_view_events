@@ -86,7 +86,8 @@ defmodule LiveViewEvents.Notify do
   def notify_to(pid, message, params) when is_pid(pid), do: send(pid, {message, params})
 
   def notify_to(target, message, params) when is_tuple(target) do
-    {pid, module, id}=process_tuple(target)
+    {pid, module, id} = process_tuple(target)
+
     Phoenix.LiveView.send_update(pid, module, %{
       :id => id,
       @assign_name_for_event => {message, params}
@@ -94,5 +95,5 @@ defmodule LiveViewEvents.Notify do
   end
 
   defp process_tuple({module, id}), do: {self(), module, id}
-  defp process_tuple({pid, _module, _id}=target) when is_pid(pid), do: target
+  defp process_tuple({pid, _module, _id} = target) when is_pid(pid), do: target
 end

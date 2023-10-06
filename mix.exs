@@ -21,6 +21,9 @@ defmodule LiveViewEvents.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.7.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.4.1", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.30.6", only: :dev, runtime: false},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_view, "~> 0.19"}
     ]
