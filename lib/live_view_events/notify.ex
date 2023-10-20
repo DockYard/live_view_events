@@ -65,7 +65,7 @@ defmodule LiveViewEvents.Notify do
   as first element, and the params as second the second element.
 
   Finally, let's take a look at what the live view template would need to look like
-  for this to work:application
+  for this to work:
 
       <div class="contents">
         <.live_component
