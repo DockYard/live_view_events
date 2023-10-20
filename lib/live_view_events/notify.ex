@@ -30,7 +30,7 @@ defmodule LiveViewEvents.Notify do
       end
 
   This component will send a `:sender_event` message to whatever we pass to the `notify_to`
-  attribute. It sends a random number between up to 100 as parameter
+  attribute. It sends a random number between 0 and up to 100 as parameter.
 
   Let's dig into the receiver:
 
@@ -58,7 +58,7 @@ defmodule LiveViewEvents.Notify do
       end
 
   This component will receive messages and handle them in `handle_info/2` because
-  it is using `handle_info_or_assigns/2` in their [`LiveComponent.update/2`](`c:Phoenix.LiveComponent.update/2`).
+  it is using `handle_info_or_assign/2` in their [`LiveComponent.update/2`](`c:Phoenix.LiveComponent.update/2`).
   It will add the received messages to `socket.assigns.messages` and display
   them. As the reader can see, it is pattern matching against `:sender_event` messages.
   When `notify_to/3` is used, the message sent is a tuple containing the event name
@@ -75,6 +75,13 @@ defmodule LiveViewEvents.Notify do
           />
         <.live_component module={MyAppWeb.Components.Receiver} id="receiver" />
       </div>
+
+  In this template, we set `notify_to` to the tuple `{MyAppWeb.Components.Receiver, "receiver"}`.
+  The first element of the tuple is the live component module and the second is the id.
+  Optionally, the tuple can contain an extra first element that needs to be a PID. Though
+  this might not be useful in the application code (there are way better ways to send events
+  between processes), it is quite useful when testing. When testing a [`LiveView`](`Phoenix.LiveView`),
+  it creates a new process for it. Its PID can be accessed through `view.pid`.
   """
 
   @assign_name_for_event "__live_view_events__assign_event__"
@@ -99,14 +106,14 @@ defmodule LiveViewEvents.Notify do
 
   In one word: consistency. Messages coming from the client are
   handled by [LiveView.handle_event/3](`c:Phoenix.LiveView.handle_event/3`)
-  in live views or by [LiveComponent.handle_event/3](`c:Phoenix.LiveComponent.handle_event/3`)
+  in live views or by [`LiveComponent.handle_event/3`](`c:Phoenix.LiveComponent.handle_event/3`)
   in live components.
   Messages sent from the server are currently being handled by
-  [LiveView.handle_info/2](`c:Phoenix.LiveView.handle_info/2`) in live views,
+  [`LiveView.handle_info/2`](`c:Phoenix.LiveView.handle_info/2`) in live views,
   with no official way to do this but the __hack__ this library is based on.
 
-  The hack is basically send an update with [LiveView](`Phoenix.LiveView.send_update/3`)
-  and handle it in [LiveComponent.update/2](`c:Phoenix.LiveComponent.update/2`).
+  The hack is basically send an update with [`LiveView.send_update/3`](`Phoenix.LiveView.send_update/3`)
+  and handle it in [`LiveComponent.update/2`](`c:Phoenix.LiveComponent.update/2`).
   """
   defmacro handle_info_or_assign(socket, assigns) do
     quote do
@@ -144,7 +151,8 @@ defmodule LiveViewEvents.Notify do
 
   - `:self` to send to `self()`.
   - A PID.
-  - A tuple of the form `{Module, "id"}` to send a message to a LiveView component.
+  - A tuple of the form `{Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in the same process.
+  - A tuple of the form `{pid, Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in a different process.
   """
   def notify_to(:self, message), do: notify_to(self(), message)
   def notify_to(pid, message) when is_pid(pid), do: send(pid, message)
