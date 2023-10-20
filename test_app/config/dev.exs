@@ -13,8 +13,11 @@ config :test_app, TestAppWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "/OOtixijCMkathudAQ6iWMDxAguNzdKOUBFOLZo/2h9IjzdYcX63RdVs4uvmdB3f",
-  watchers: []
+  secret_key_base: "MVfVqvjONa3PIqwCiKp/rj4c/bjeUE7Mxljl1LOSHMCkCr8fuCxNvnkZIXC4wKhC",
+  watchers: [
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
+  ]
 
 # ## SSL Support
 #
@@ -44,6 +47,7 @@ config :test_app, TestAppWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/gettext/.*(po)$",
       ~r"lib/test_app_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]

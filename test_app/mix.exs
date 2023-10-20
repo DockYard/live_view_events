@@ -46,6 +46,8 @@ defmodule TestApp.MixProject do
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> #{phoenix_lv_version}"},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:live_isolated_component, "~> 0.7.0", only: [:dev, :test]},
       {:live_view_events, path: "./.."},
       {:floki, ">= 0.30.0", only: :test},
