@@ -4,7 +4,7 @@ import Config
 # you can enable the server option below.
 config :test_app, TestAppWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "EdKwrnAZO/we479ohsBsJbnpaK+0LV2SONLY83a+FNvycfw2Rfp7C7WtVWSbrAZS",
+  secret_key_base: "X9+vRXpacKTuvdT9qeO0R9sVugBRbPumBqyOUCfohNTCFUz6OSTrplxm+dMsnExa",
   server: false
 
 # Print only warnings and errors during test

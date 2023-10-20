@@ -14,7 +14,7 @@ defmodule LiveViewEvents.Notify do
         use LiveViewEvents
 
         def mount(socket) do
-          socket = assigns(socket, :notify_to, :self)
+          socket = assign(socket, :notify_to, :self)
 
           {:ok, socket}
         end
@@ -23,8 +23,9 @@ defmodule LiveViewEvents.Notify do
           ~H[<button type="button" phx-click="clicked" phx-target={@myself}>Send event</button>]
         end
 
-        def handle_event("click", _params, socket) do
+        def handle_event("clicked", _params, socket) do
           notify_to(socket.assigns.notify_to, :sender_event, :rand.uniform(100))
+          {:noreply, socket}
         end
       end
 
@@ -38,13 +39,13 @@ defmodule LiveViewEvents.Notify do
         use LiveViewEvents
 
         def mount(socket) do
-          socket = assigns(socket, :messages, [])
+          socket = assign(socket, :messages, [])
 
           {:ok, socket}
         end
 
         def update(assigns, socket) do
-          socket = handle_info_or_assigns(socket, assigns)
+          socket = handle_info_or_assign(socket, assigns)
 
           {:ok, socket}
         end

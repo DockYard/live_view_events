@@ -39,7 +39,8 @@ defmodule LiveViewEvents.MixProject do
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url},
       files: ~w(lib LICENSE.md mix.exs README.md),
-      description: "A library to unify and simplify sending messages between components and views in the server for Phoenix LiveView."
+      description:
+        "A library to unify and simplify sending messages between components and views in the server for Phoenix LiveView."
     ]
   end
 
