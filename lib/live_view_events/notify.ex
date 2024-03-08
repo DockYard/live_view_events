@@ -149,11 +149,13 @@ defmodule LiveViewEvents.Notify do
   @doc """
   `notify_to/2` accepts a target and a message name. The target can be any of:
 
+  - `nil` would make it be a noop.
   - `:self` to send to `self()`.
   - A PID.
   - A tuple of the form `{Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in the same process.
   - A tuple of the form `{pid, Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in a different process.
   """
+  def notify_to(nil, _message), do: nil
   def notify_to(:self, message), do: notify_to(self(), message)
   def notify_to(pid, message) when is_pid(pid), do: send(pid, message)
 
@@ -167,6 +169,7 @@ defmodule LiveViewEvents.Notify do
   In this case, the message sent would be a tuple with the `message` as first element and `params` as the
   second one.
   """
+  def notify_to(nil, _message, _params), do: nil
   def notify_to(:self, message, params), do: notify_to(self(), message, params)
   def notify_to(pid, message, params) when is_pid(pid), do: send(pid, {message, params})
 
