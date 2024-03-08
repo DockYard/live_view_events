@@ -33,12 +33,12 @@ defmodule TestApp.MixProject do
   defp deps do
     phoenix_version =
       "PHOENIX_VERSION"
-      |> System.get_env("1.7.7")
+      |> System.get_env("1.7.11")
       |> IO.inspect(label: "PHOENIX VERSION")
 
     phoenix_lv_version =
       "PHOENIX_LIVE_VIEW_VERSION"
-      |> System.get_env("0.20.0")
+      |> System.get_env("0.20.12")
       |> IO.inspect(label: "PHOENIX LIVE VIEW VERSION")
 
     [
@@ -47,15 +47,15 @@ defmodule TestApp.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> #{phoenix_lv_version}"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:live_isolated_component, "~> 0.7.0", only: [:dev, :test]},
+      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
+      {:live_isolated_component, "~> 0.8.0", only: [:dev, :test]},
       {:live_view_events, path: "./.."},
-      {:floki, ">= 0.30.0", only: :test},
+      {:floki, ">= 0.36.0", only: :test},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
-      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:plug_cowboy, "~> 2.7"},
+      {:mix_test_watch, "~> 1.2.0", only: [:dev, :test], runtime: false}
     ]
   end
 
