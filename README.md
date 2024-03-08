@@ -26,6 +26,7 @@ You can send events to LiveView components by using `notify_to/2` or `notify_to/
 difference being that the latter sends some extra params). These functions accept a target as
 first argument and a message name as second. Targets can be any of:
 
+  - `nil` makes the function call be a noop. Useful if you want to only send a message if an explicit target has been passed in.
   - `:self` to send to `self()`.
   - A PID.
   - A tuple of the form `{Module, "id"}` to send a message to a `LiveView.Component` in the same process.
