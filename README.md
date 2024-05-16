@@ -123,3 +123,13 @@ Optionally, the tuple can contain an extra first element that needs to be a PID.
 this might not be useful in the application code (there are way better ways to send events
 between processes), it is quite useful when testing. When testing a `LiveView`
 it creates a new process for it. Its PID can be accessed through `view.pid`.
+
+## Why are messages without params still receiving empty params?
+
+To normalize how to handle messages. If we could have `handle_info("message_name", _socket)`
+or `handle_info({"message_name", _params}, socket)`, you would need to think about whether
+the message contains params or not and then use a tuple. With this normalization, you only
+care about the message name and whether you need the params or not. Also, after using similar
+approaches in the past, sometimes you want to send params and sometimes you don't need to.
+In cases like these, it is helpful not having a different behaviour notifying an event without
+params and sending an event with _empty_ params.

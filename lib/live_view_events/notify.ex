@@ -154,14 +154,20 @@ defmodule LiveViewEvents.Notify do
   - A PID.
   - A tuple of the form `{Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in the same process.
   - A tuple of the form `{pid, Module, "id"}` to send a message to a [`LiveView.Component`](`Phoenix.LiveView.Component`) in a different process.
+
+  The event send will take the form of `{message, %{}}`.
   """
   def notify_to(nil, _message), do: nil
-  def notify_to(:self, message), do: notify_to(self(), message)
-  def notify_to(pid, message) when is_pid(pid), do: send(pid, message)
+  def notify_to(:self, message), do: notify_to(self(), normalize_message(message))
+  def notify_to(pid, message) when is_pid(pid), do: send(pid, normalize_message(message))
 
   def notify_to(target, message) when is_tuple(target) do
     {pid, module, id} = process_tuple(target)
-    Phoenix.LiveView.send_update(pid, module, %{:id => id, @assign_name_for_event => message})
+
+    Phoenix.LiveView.send_update(pid, module, %{
+      :id => id,
+      @assign_name_for_event => normalize_message(message)
+    })
   end
 
   @doc """
@@ -181,6 +187,9 @@ defmodule LiveViewEvents.Notify do
       @assign_name_for_event => {message, params}
     })
   end
+
+  defp normalize_message({_message_name, %{} = _params} = message), do: message
+  defp normalize_message(message_name), do: {message_name, %{}}
 
   defp process_tuple({module, id}), do: {self(), module, id}
   defp process_tuple({pid, _module, _id} = target) when is_pid(pid), do: target
