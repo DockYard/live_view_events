@@ -84,7 +84,7 @@ defmodule LiveViewEvents.Notify do
   it creates a new process for it. Its PID can be accessed through `view.pid`.
   """
 
-  @assign_name_for_event "__live_view_events__assign_event__"
+  @assign_name_for_event :__live_view_events__assign_event__
 
   @doc """
   Use this macro instead of the default `assigns(socket, assign)` in
