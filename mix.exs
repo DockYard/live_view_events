@@ -51,7 +51,7 @@ defmodule LiveViewEvents.MixProject do
       {:dialyxir, "~> 1.4.3", only: :dev, runtime: false},
       {:ex_doc, "~> 0.31.2", only: :dev, runtime: false},
       {:floki, ">= 0.36.0", only: :test},
-      {:phoenix_live_view, "~> 0.19"}
+      {:phoenix_live_view, "~> 0.19 or ~> 1.0"}
     ]
   end
 end
